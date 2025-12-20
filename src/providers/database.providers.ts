@@ -7,7 +7,10 @@ export const databaseProviders = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'postgres',
-        url: process.env.DB_URL,
+        url:
+          process.env.NODE_ENV === 'development'
+            ? process.env.DB_URL_DEV
+            : process.env.DB_URL_PROD,
         // host: process.env.DB_HOST,
         // port: Number(process.env.DB_PORT),
         // username: process.env.DB_ROOT,

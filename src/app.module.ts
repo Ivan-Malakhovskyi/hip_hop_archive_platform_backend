@@ -26,7 +26,10 @@ const prodConfig = {
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DB_URL,
+      url:
+        process.env.NODE_ENV === 'development'
+          ? process.env.DB_URL_DEV
+          : process.env.DB_URL_PROD,
       // database: process.env.DB_NAME,
       // host: process.env.DB_HOST,
       // port: parseInt(process.env.DB_PORT!) || 3306,
