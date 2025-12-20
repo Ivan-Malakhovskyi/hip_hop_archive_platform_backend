@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  ConflictException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -18,11 +18,19 @@ export class UsersService {
   ) {}
 
   async createUser(userDTO: CreateUserDTO): Promise<Omit<User, 'password'>> {
-    const isUserInDb = await this.findOne(userDTO);
+    const isUserExist = await this.userRepository.findOneBy({
+      email: userDTO.email,
+    });
 
-    if (isUserInDb) {
-      throw new BadRequestException('User already exist');
+    if (isUserExist) {
+      throw new ConflictException('User already exist');
     }
+
+    const userSchema = new User();
+
+    userSchema.firstName = userDTO.firstName;
+    userSchema.lastName = userDTO.lastName;
+    userSchema.email = userDTO.email;
 
     const salt = await bcrypt.genSalt();
     userDTO.password = await bcrypt.hash(userDTO.password, salt);
@@ -30,7 +38,6 @@ export class UsersService {
     const user = await this.userRepository.save(userDTO);
 
     const { password, ...rest } = user;
-    console.log('🚀 ~ UsersService ~ createUser ~ password:', password);
 
     return rest;
   }

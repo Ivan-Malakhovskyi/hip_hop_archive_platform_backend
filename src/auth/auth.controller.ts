@@ -6,7 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
+  HttpCode,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { CreateUserDTO } from 'src/users/dto/crete-user.dto';
@@ -18,36 +22,41 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('signup')
   signup(@Body() userDTO: CreateUserDTO) {
-    console.log('SSSS');
     return this.userService.createUser(userDTO);
   }
 
+  @HttpCode(200)
   @Post('signin')
-  signin(@Body() userDTO: SignInUserDTO) {
-    return this.authService.signin(userDTO);
+  async signin(
+    @Body() userDTO: SignInUserDTO,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.signin(userDTO);
+    const { password, ...rest } = userDTO;
+
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: this.configService.get<string>('NODE_ENV') === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return {
+      accessToken,
+      ...rest,
+    };
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  @HttpCode(204)
+  @Get('signout')
+  signout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('accessToken');
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    return { message: 'Signout success' };
   }
 }

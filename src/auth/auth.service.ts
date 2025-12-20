@@ -1,9 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import * as bcryptjs from 'bcryptjs';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-import { SignInUserDTO } from './dto/signin-user.dto';
-import { UsersService } from 'src/users/users.service';
+import { Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
+import * as bcryptjs from 'bcryptjs';
+import { UsersService } from 'src/users/users.service';
+import { SignInUserDTO } from './dto/signin-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,19 +33,9 @@ export class AuthService {
     }
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  signOut(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('accessToken');
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return { success: true };
   }
 }

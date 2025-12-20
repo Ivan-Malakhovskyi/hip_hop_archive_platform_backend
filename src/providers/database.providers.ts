@@ -6,14 +6,18 @@ export const databaseProviders = [
 
     useFactory: async () => {
       const dataSource = new DataSource({
-        type: 'mariadb',
-        host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: '',
-        database: 'hip_hop_platform',
+        type: 'postgres',
+        url: process.env.DB_URL,
+        // host: process.env.DB_HOST,
+        // port: Number(process.env.DB_PORT),
+        // username: process.env.DB_ROOT,
+        // password: process.env.DB_PASSWORD,
+        // database: process.env.DB_NAME,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
+        ssl: {
+          rejectUnauthorized: false,
+        },
       });
 
       return dataSource.initialize();
