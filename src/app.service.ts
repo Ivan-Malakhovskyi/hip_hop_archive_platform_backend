@@ -14,6 +14,6 @@ export class AppService {
 
   @Get()
   getHello(): string {
-    return `Server is running on the ${this.devConfigService.getDB_HOST()} PORT IS ${this.config.port} and ${this.configService.get<string>('JWT_SECRET')}`;
+    return `Server is running on the ${process.env.NODE_ENV === 'development' ? this.devConfigService.getDB_HOST() : 'PROD HOISTING'} `;
   }
 }

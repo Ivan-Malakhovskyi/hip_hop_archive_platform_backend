@@ -13,7 +13,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    console.log(this.configService.get<string>('JWT_SECRET'));
     return this.appService.getHello();
   }
 
