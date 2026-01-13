@@ -13,6 +13,8 @@ async function bootstrap() {
     origin: '*',
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 5000);
+
+  console.log('ssss');
 }
 bootstrap();

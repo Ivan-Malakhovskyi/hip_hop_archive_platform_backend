@@ -44,6 +44,18 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## RUN with Docker
+
+```bash
+# build image
+$ docker build
+
+# start app
+$ docker-compose up
+
+
+```
+
 ## Run tests
 
 ```bash
