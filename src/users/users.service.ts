@@ -1,4 +1,5 @@
 import {
+  Body,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -6,18 +7,19 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import { CreateUserDTO } from './dto/crete-user.dto';
 import { SignInUserDTO } from 'src/auth/dto/signin-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async createUser(userDTO: CreateUserDTO): Promise<Omit<User, 'password'>> {
+  async createUser(
+    @Body() userDTO: CreateUserDTO,
+  ): Promise<Omit<User, 'password'>> {
     const isUserExist = await this.userRepository.findOneBy({
       email: userDTO.email,
     });
@@ -36,7 +38,6 @@ export class UsersService {
     userDTO.password = await bcrypt.hash(userDTO.password, salt);
 
     const user = await this.userRepository.save(userDTO);
-
     const { password, ...rest } = user;
 
     return rest;
