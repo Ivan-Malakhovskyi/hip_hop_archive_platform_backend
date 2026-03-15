@@ -14,6 +14,6 @@ export class AppService {
 
   @Get()
   getHello(): string {
-    return `Server is running on the ${process.env.NODE_ENV === 'development' ? this.devConfigService.getDB_HOST() : 'PROD HOISTING'} `;
+    return `Server is running on ff the ${process.env.NODE_ENV === 'development' ? this.devConfigService.getDB_HOST() : 'PROD HOISTING'} `;
   }
 }

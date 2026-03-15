@@ -44,7 +44,7 @@ const prodConfig = {
       synchronize: true,
       // ssl: {
       //   rejectUnauthorized:
-      //     process.env.NODE_ENV === 'development' ? false : true,
+      //     process.env.NODE_ENV = == 'development' ? false : true,
       // },
       autoLoadEntities: true,
     }),

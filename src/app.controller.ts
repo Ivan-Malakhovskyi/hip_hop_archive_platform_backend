@@ -11,6 +11,7 @@ export class AppController {
 
   @Get()
   getHello(): string {
+    console.log('READY GO');
     return this.appService.getHello();
   }
 }

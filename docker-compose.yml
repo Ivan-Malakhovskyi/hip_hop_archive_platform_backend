@@ -1,6 +1,26 @@
 version: '3.9'
 
 services:
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
+    # env_file:
+    #   - .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_pass
+      POSTGRES_DB: hip_hop_archive
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: always
+
   api:
     container_name: api
     build:
@@ -16,20 +36,12 @@ services:
     command: npm run start:dev
     restart: always
     depends_on:
-      - postgres
-
-  postgres:
-    container_name: postgres
-    image: postgres:16-alpine
-    env_file:
-      - .env
-    environment:
-      PGDATA: /var/lib/postgresql/data
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    restart: always
+      postgres:
+        condition: service_healthy
 
 volumes:
-  pgdata:
+  postgres_data:
+
+# networks:
+#   postgres_network:
+#   driver: bridge

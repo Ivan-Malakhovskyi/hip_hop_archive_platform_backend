@@ -43,8 +43,9 @@ export class AuthController {
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: this.configService.get<string>('NODE_ENV') === 'production',
-      sameSite: 'strict',
+      secure: false, //!PROD true
+      // secure: this.configService.get<string>('NODE_ENV') === 'production',
+      sameSite: 'lax', //! PROD none
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -75,7 +76,8 @@ export class AuthController {
 
   @HttpCode(204)
   @Get('signout')
-  signout(@Res({ passthrough: true }) res: Response) {
+  signout(@Res() res: Response) {
+    console.log('ACTION!');
     res.clearCookie('accessToken');
 
     return { message: 'Signout success' };

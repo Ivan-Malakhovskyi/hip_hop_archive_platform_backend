@@ -14,6 +14,7 @@ export class AuthService {
 
   async signin(signinDTO: SignInUserDTO): Promise<{ accessToken: string }> {
     const user = await this.userService.findOne(signinDTO);
+    console.log('🚀 ~ AuthService ~ signin ~ user:', user);
 
     const isPasswordUserMatched = await bcryptjs.compare(
       signinDTO.password,
@@ -21,7 +22,7 @@ export class AuthService {
     );
 
     if (!isPasswordUserMatched) {
-      throw new UnauthorizedException("Password doesn't match");
+      throw new UnauthorizedException('Email or password is wrong');
     } else {
       const { password, ...rest } = user;
 
