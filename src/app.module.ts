@@ -4,7 +4,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { User } from './users/entities/user.entity';
 import { DevConfigService } from './providers/DevConfigService';
 import { ConfigModule } from '@nestjs/config';
 import { SongsModule } from './songs/songs.module';
@@ -31,10 +30,10 @@ const prodConfig = {
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url:
-        process.env.NODE_ENV === 'development'
-          ? process.env.DATABASE_PUBLIC_URL
-          : process.env.DATABASE_URL,
+      url: process.env.DATABASE_URL,
+      // process.env.NODE_ENV === 'development'
+      //   ? process.env.DATABASE_PUBLIC_URL
+      //   : process.env.DATABASE_URL,
       // database: process.env.DB_NAME,
       // host: process.env.DB_HOST,
       // port: parseInt(process.env.DB_PORT!),
@@ -42,9 +41,14 @@ const prodConfig = {
       // password: process.env.DB_PASSWORD,
       // entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: process.env.NODE_ENV === 'development' ? true : false,
-      ssl: {
-        rejectUnauthorized: false,
+
+      extra: {
+        ssl: {
+          rejectUnauthorized: false,
+        },
       },
+      retryDelay: 3000,
+      retryAttempts: 5,
       autoLoadEntities: true,
     }),
     UsersModule,

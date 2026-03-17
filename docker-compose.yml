@@ -8,15 +8,15 @@ services:
     #   - .env
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_pass
-      POSTGRES_DB: hip_hop_archive
+      POSTGRES_PASSWORD: kMltbOEZsRrMGrNCzuvWzfmaQOVgkvVa
+      POSTGRES_DB: railway
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 5s
       timeout: 5s
       retries: 5
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data/pgdata
     ports:
       - 5432:5432
     restart: always
