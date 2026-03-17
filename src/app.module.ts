@@ -31,21 +31,20 @@ const prodConfig = {
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      // url:
-      //   process.env.NODE_ENV === 'development'
-      //     ? process.env.DB_URL_DEV
-      //     : process.env.DB_URL_PROD,
-      database: process.env.DB_NAME,
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT!),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
-      // ssl: {
-      //   rejectUnauthorized:
-      //     process.env.NODE_ENV = == 'development' ? false : true,
-      // },
+      url:
+        process.env.NODE_ENV === 'development'
+          ? process.env.DATABASE_PUBLIC_URL
+          : process.env.DATABASE_URL,
+      // database: process.env.DB_NAME,
+      // host: process.env.DB_HOST,
+      // port: parseInt(process.env.DB_PORT!),
+      // username: process.env.DB_USER,
+      // password: process.env.DB_PASSWORD,
+      // entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: process.env.NODE_ENV === 'development' ? true : false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
       autoLoadEntities: true,
     }),
     UsersModule,
